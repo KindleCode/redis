@@ -29,6 +29,7 @@ hs_err_pid*
 #忽略掉临时文件?
 *.bak
 *.properties
+*.gradle
 
 #忽略eclipse项目描述文件
 *.classpath
