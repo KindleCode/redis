@@ -30,7 +30,10 @@ public class RedisCache extends AbstractValueAdaptingCache {
      */
     private long expiration;
 
-    private String cachePrefix;
+    /**
+     * 前缀
+     */
+    private String cachePrefix = "";
 
     /**
      * @param name            缓存名称

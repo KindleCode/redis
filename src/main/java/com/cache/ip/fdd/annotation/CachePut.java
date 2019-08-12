@@ -6,18 +6,16 @@ import java.lang.annotation.*;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 表示调用的方法（或类中的所有方法）的结果是可以被缓存的。
- * 当该方法被调用时先检查缓存是否命中，如果没有命中再调用被缓存的方法，并将其返回值放到缓存中。
- * 这里的value和key都支持SpEL 表达式
+ * 将对应数据放到缓存中
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface Cacheable {
+public @interface CachePut {
 
     /**
-     * 别名是 {@link #cacheNames}.
+     * 别名 {@link #cacheNames}.
      *
      * @return String[]
      */
@@ -25,7 +23,7 @@ public @interface Cacheable {
     String[] value() default {};
 
     /**
-     * 缓存名称，支持SpEL表达式
+     * 缓存名称
      *
      * @return String[]
      */
@@ -44,6 +42,9 @@ public @interface Cacheable {
      * <p>The SpEL expression evaluates against a dedicated context that provides the
      * following meta-data:
      * <ul>
+     * <li>{@code #result} for a reference to the result of the method invocation. For
+     * supported wrappers such as {@code Optional}, {@code #result} refers to the actual
+     * object, not the wrapper</li>
      * <li>{@code #root.method}, {@code #root.target}, and {@code #root.caches} for
      * references to the {@link java.lang.reflect.Method method}, target object, and
      * affected cache(s) respectively.</li>
@@ -71,5 +72,4 @@ public @interface Cacheable {
      * @return TimeUnit
      */
     TimeUnit timeUnit() default TimeUnit.MINUTES;
-
 }

@@ -27,9 +27,16 @@ dependencies {
 
     compile "com.dianping.cat:cat-client:3.0.2"
     compile "com.fangdd.logtrace:logtraceutil:1.1.0"
-    compile "com.alibaba:fastjson:1.2.35"
+    compile "com.alibaba:fastjson:1.2.41"
     compile 'commons-lang:commons-lang:2.6'
     compile 'com.esotericsoftware:kryo-shaded:3.0.3'
+    compile "redis.clients:jedis:2.9.0"
+
+    compile 'org.springframework:spring-aspects:3.2.8.RELEASE'
+    compile 'org.springframework:spring-orm:3.2.8.RELEASE'
+
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.9.3'
+
 
     testCompile "org.springframework.boot:spring-boot-starter-test:2.0.8.RELEASE"
 

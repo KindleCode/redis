@@ -1,5 +1,6 @@
 package com.cache.ip.fdd.aspect;
 
+import com.cache.ip.fdd.annotation.CachePut;
 import com.cache.ip.fdd.annotation.Cacheable;
 import com.cache.ip.fdd.cache.expression.CacheOperationExpressionEvaluator;
 import com.cache.ip.fdd.cache.manager.CacheManager;
@@ -18,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.expression.AnnotatedElementKey;
 import org.springframework.core.BridgeMethodResolver;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
@@ -28,6 +28,7 @@ import java.lang.reflect.Method;
 import java.util.Objects;
 
 /**
+ * @author MrCai
  * 缓存拦截，用于注册方法信息
  */
 @Aspect
@@ -40,17 +41,16 @@ public class LayeringAspect {
     @Autowired
     private CacheManager cacheManager;
 
-    @Autowired
-    private RedisTemplate redisTemplate;
-
     /**
      * SpEL表达式计算器
      */
     private final CacheOperationExpressionEvaluator evaluator = new CacheOperationExpressionEvaluator();
 
     @Pointcut("@annotation(com.cache.ip.fdd.annotation.Cacheable)")
-    public void cacheablePointcut() {
-    }
+    public void cacheablePointcut() {}
+
+    @Pointcut("@annotation(com.cache.ip.fdd.annotation.CachePut)")
+    public void cachePutPointcut(){}
 
 
     @Around("cacheablePointcut()")
@@ -64,6 +64,22 @@ public class LayeringAspect {
         try {
             // 执行查询缓存方法
             return executeCacheable(aopAllianceInvoker, cacheable, method, joinPoint.getArgs(), joinPoint.getTarget());
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    @Around("cachePutPointcut()")
+    public Object cachePutPointcut(ProceedingJoinPoint joinPoint) throws Throwable {
+        CacheOperationInvoker aopAllianceInvoker = getCacheOperationInvoker(joinPoint);
+
+        // 获取method
+        Method method = this.getSpecificmethod(joinPoint);
+        // 获取注解
+        CachePut cachePut = AnnotationUtils.findAnnotation(method, CachePut.class);
+        try {
+            // 执行查询缓存方法
+            return executecachePut(aopAllianceInvoker, cachePut, method, joinPoint.getArgs(), joinPoint.getTarget());
         } catch (Exception e) {
             throw e;
         }
@@ -93,6 +109,36 @@ public class LayeringAspect {
         Cache cache = cacheManager.getCache(cacheName, layeringCacheSetting);
 
         return cache.get(key, () -> invoker.invoke());
+    }
+
+    /**
+     * 执行cachePut切面
+     *
+     * @param invoker   缓存注解的回调方法
+     * @param cachePut {@link Cacheable}
+     * @param method    {@link Method}
+     * @param args      注解方法参数
+     * @param target    target
+     * @return {@link Object}
+     */
+    private Object executecachePut(CacheOperationInvoker invoker, CachePut cachePut,
+                                   Method method, Object[] args, Object target){
+        String[] cacheNames = cachePut.cacheNames();
+        Assert.notEmpty(cachePut.cacheNames(), CACHE_NAME_ERROR_MESSAGE);
+        Object key = generateKey(cachePut.key(), method, args, target);
+        Assert.notNull(key, String.format(CACHE_KEY_ERROR_MESSAGE, cachePut.key()));
+
+        LayeringCacheSetting layeringCacheSetting = new LayeringCacheSetting(cachePut.expireTime(),cachePut.timeUnit(),cachePut.depict());
+
+        //获得值
+        Object result = invoker.invoke();
+
+        for (String cacheName : cacheNames) {
+            // 通过cacheName和缓存配置获取Cache
+            Cache cache = cacheManager.getCache(cacheName, layeringCacheSetting);
+            cache.put(key, result);
+        }
+        return result;
     }
 
 
