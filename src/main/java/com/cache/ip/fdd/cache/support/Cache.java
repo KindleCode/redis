@@ -96,7 +96,7 @@ public interface Cache {
     void evict(Object key);
 
     /**
-     * 清楚缓存
+     * 清除缓存
      */
     void clear();
 

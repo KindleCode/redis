@@ -21,7 +21,7 @@ public interface CacheManager {
      * @param name 缓存的名称 (不能为 {@code null})
      * @return 返回对应名称的Cache, 如果没找到返回 {@code null}
      */
-    Collection<Cache> getCache(String name);
+    Cache getCache(String name);
 
     /**
      * 根据缓存名称返回对应的{@link Cache}，如果没有找到就新建一个并放到容器

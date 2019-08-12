@@ -1,5 +1,6 @@
 package com.cache.ip.fdd.cache.manager;
 
+import com.cache.ip.fdd.cache.RedisCache;
 import com.cache.ip.fdd.cache.setting.LayeringCacheSetting;
 import com.cache.ip.fdd.cache.stats.CacheStatsInfo;
 import com.cache.ip.fdd.cache.support.Cache;
@@ -10,10 +11,7 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.data.redis.core.RedisTemplate;
 
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -61,8 +59,15 @@ public abstract class AbstractCacheManager implements CacheManager, Initializing
     }
 
     @Override
-    public Collection<Cache> getCache(String name) {
-       return null;
+    public Cache getCache(String name) {
+
+        Cache cache = cacheContainer.get(name);
+        //如果不存在，返回一个临时的
+        if (Objects.isNull(cache)){
+            return new RedisCache(name, cachePrefix, redisTemplate,0L, false);
+        }
+
+        return cache;
     }
 
     @Override

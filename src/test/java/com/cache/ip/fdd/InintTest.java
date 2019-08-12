@@ -42,4 +42,9 @@ public class InintTest {
         User cacheService02 = cacheService.get02(19230L);
         System.out.println(1);
     }
+
+    @Test
+    public void cacheEvit01(){
+        cacheService.deleteUser(19230L);
+    }
 }

@@ -1,5 +1,6 @@
 package com.cache.ip.fdd.aspect;
 
+import com.cache.ip.fdd.annotation.CacheEvict;
 import com.cache.ip.fdd.annotation.CachePut;
 import com.cache.ip.fdd.annotation.Cacheable;
 import com.cache.ip.fdd.cache.expression.CacheOperationExpressionEvaluator;
@@ -52,6 +53,9 @@ public class LayeringAspect {
     @Pointcut("@annotation(com.cache.ip.fdd.annotation.CachePut)")
     public void cachePutPointcut(){}
 
+    @Pointcut("@annotation(com.cache.ip.fdd.annotation.CacheEvict)")
+    public void cacheEvictPointcut(){}
+
 
     @Around("cacheablePointcut()")
     public Object cacheablePointcut(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -79,10 +83,28 @@ public class LayeringAspect {
         CachePut cachePut = AnnotationUtils.findAnnotation(method, CachePut.class);
         try {
             // 执行查询缓存方法
-            return executecachePut(aopAllianceInvoker, cachePut, method, joinPoint.getArgs(), joinPoint.getTarget());
+            return executeCachePut(aopAllianceInvoker, cachePut, method, joinPoint.getArgs(), joinPoint.getTarget());
         } catch (Exception e) {
             throw e;
         }
+    }
+
+    @Around("cacheEvictPointcut()")
+    public void cacheEvictPointcut(ProceedingJoinPoint joinPoint) throws Throwable {
+
+        CacheOperationInvoker aopAllianceInvoker = getCacheOperationInvoker(joinPoint);
+
+        // 获取method
+        Method method = this.getSpecificmethod(joinPoint);
+        // 获取注解
+        CacheEvict cacheEvict = AnnotationUtils.findAnnotation(method, CacheEvict.class);
+        try {
+            // 执行查询缓存方法
+            executeCacheEvict(aopAllianceInvoker, cacheEvict, method, joinPoint.getArgs(), joinPoint.getTarget());
+        } catch (Exception e) {
+            throw e;
+        }
+
     }
 
     /**
@@ -121,7 +143,7 @@ public class LayeringAspect {
      * @param target    target
      * @return {@link Object}
      */
-    private Object executecachePut(CacheOperationInvoker invoker, CachePut cachePut,
+    private Object executeCachePut(CacheOperationInvoker invoker, CachePut cachePut,
                                    Method method, Object[] args, Object target){
         String[] cacheNames = cachePut.cacheNames();
         Assert.notEmpty(cachePut.cacheNames(), CACHE_NAME_ERROR_MESSAGE);
@@ -141,6 +163,31 @@ public class LayeringAspect {
         return result;
     }
 
+    /**
+     * 执行cacheEvict切面
+     *
+     * @param invoker   缓存注解的回调方法
+     * @param cacheEvict {@link Cacheable}
+     * @param method    {@link Method}
+     * @param args      注解方法参数
+     * @param target    target
+     * @return {@link Object}
+     */
+    private void executeCacheEvict(CacheOperationInvoker invoker, CacheEvict cacheEvict,
+                                   Method method, Object[] args, Object target){
+
+        Object key = generateKey(cacheEvict.key(), method, args, target);
+        Assert.notNull(key, String.format(CACHE_KEY_ERROR_MESSAGE, cacheEvict.key()));
+
+        String[] cacheNames = cacheEvict.cacheNames();
+
+        for (String cacheName : cacheNames) {
+            Cache cache = cacheManager.getCache(cacheName);
+            cache.evict(key);
+        }
+        //执行本函数
+        invoker.invoke();
+    }
 
     private CacheOperationInvoker getCacheOperationInvoker(ProceedingJoinPoint joinPoint) {
         return () -> {
