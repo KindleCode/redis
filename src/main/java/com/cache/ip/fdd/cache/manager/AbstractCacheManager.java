@@ -2,7 +2,6 @@ package com.cache.ip.fdd.cache.manager;
 
 import com.cache.ip.fdd.cache.RedisCache;
 import com.cache.ip.fdd.cache.setting.LayeringCacheSetting;
-import com.cache.ip.fdd.cache.stats.CacheStatsInfo;
 import com.cache.ip.fdd.cache.support.Cache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -136,17 +135,6 @@ public abstract class AbstractCacheManager implements CacheManager, Initializing
 //            // 采集缓存命中率数据
 //            BeanFactory.getBean(StatsService.class).syncCacheStats();
 //        }
-    }
-
-    @Override
-    public List<CacheStatsInfo> listCacheStats(String cacheName) {
-//        return BeanFactory.getBean(StatsService.class).listCacheStats(cacheName);
-        return null;
-    }
-
-    @Override
-    public void resetCacheStat() {
-//        BeanFactory.getBean(StatsService.class).resetCacheStat();
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.cache.ip.fdd.cache;
 
 import com.alibaba.fastjson.JSON;
 import com.cache.ip.fdd.cache.support.NullValue;
+import com.cache.ip.fdd.cache.support.RedisHitEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -33,7 +34,7 @@ public class RedisCache extends AbstractValueAdaptingCache {
     /**
      * 前缀
      */
-    private String cachePrefix = "";
+    private String cachePrefix;
 
     /**
      * @param name            缓存名称
@@ -45,6 +46,7 @@ public class RedisCache extends AbstractValueAdaptingCache {
         super(stats, name);
 
         Assert.notNull(redisTemplate, "RedisTemplate 不能为NULL");
+        Assert.hasLength(cachePrefix, "cachePrefix 必须设置");
         this.redisTemplate = redisTemplate;
         this.expiration = expiration;
         this.cachePrefix = cachePrefix;
@@ -57,25 +59,27 @@ public class RedisCache extends AbstractValueAdaptingCache {
 
     @Override
     public Object get(Object key) {
-        if (isStats()) {
-            getCacheStats().addCacheRequestCount(1);
-        }
-
         RedisCacheKey redisCacheKey = getRedisCacheKey(key);
         logger.debug("redis缓存 key= {} 查询redis缓存", redisCacheKey.getKey());
-        return redisTemplate.opsForValue().get(redisCacheKey.getKey());
+        Object result = redisTemplate.opsForValue().get(redisCacheKey.getKey());
+        if (isStats()) {
+            getCacheMonitor().monitor(redisCacheKey.getKey(), result, RedisHitEnum.CACHEABLE);
+        }
+        return result;
     }
 
     @Override
     public <T> T get(Object key, Callable<T> valueLoader) {
-        if (isStats()) {
-            getCacheStats().addCacheRequestCount(1);
-        }
 
         RedisCacheKey redisCacheKey = getRedisCacheKey(key);
         logger.debug("redis缓存 key= {} 查询redis缓存如果没有命中，从数据库获取数据", redisCacheKey.getKey());
         // 先获取缓存，如果有直接返回
         Object result = redisTemplate.opsForValue().get(redisCacheKey.getKey());
+
+        if (isStats()) {
+            getCacheMonitor().monitor(redisCacheKey.getKey(), result, RedisHitEnum.CACHEABLE);
+        }
+
         if (result != null || redisTemplate.hasKey(redisCacheKey.getKey())) {
             return (T) fromStoreValue(result);
         }
@@ -134,18 +138,12 @@ public class RedisCache extends AbstractValueAdaptingCache {
      */
     private <T> T loaderAndPutValue(RedisCacheKey key, Callable<T> valueLoader, boolean isLoad) {
         long start = System.currentTimeMillis();
-        if (isLoad && isStats()) {
-            getCacheStats().addCachedMethodRequestCount(1);
-        }
 
         try {
             // 加载数据
             Object result = putValue(key, valueLoader.call());
             logger.debug("redis缓存 key={} 执行被缓存的方法，并将其放入缓存, 耗时：{}。数据:{}", key.getKey(), System.currentTimeMillis() - start, JSON.toJSONString(result));
 
-            if (isLoad && isStats()) {
-                getCacheStats().addCachedMethodRequestTime(System.currentTimeMillis() - start);
-            }
             return (T) fromStoreValue(result);
         } catch (Exception e) {
             throw new LoaderCacheValueException(key.getKey(), e);

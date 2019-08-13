@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class CacheService {
 
-    @Cacheable(value = "user:info", key = "#userId", expireTime = 10, timeUnit = TimeUnit.HOURS,depict = "这是描述")
+    @Cacheable(value = "user:info", key = "#userId", expireTime = 10, timeUnit = TimeUnit.HOURS, depict = "这是描述")
     public User get01(Long userId){
         User user = new User();
         user.setUserId(userId);

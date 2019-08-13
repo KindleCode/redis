@@ -17,7 +17,9 @@
 package com.cache.ip.fdd.cache;
 
 import com.alibaba.fastjson.JSON;
-import com.cache.ip.fdd.cache.stats.CacheStats;
+import com.cache.ip.fdd.cache.manager.CacheManager;
+import com.cache.ip.fdd.cache.stats.CacheMonitor;
+import com.cache.ip.fdd.cache.stats.DefaultCacheMonitor;
 import com.cache.ip.fdd.cache.support.Cache;
 import com.cache.ip.fdd.cache.support.NullValue;
 import org.springframework.util.Assert;
@@ -44,9 +46,9 @@ public abstract class AbstractValueAdaptingCache implements Cache {
     private boolean stats;
 
     /**
-     * 缓存统计类
+     * 缓存统计器
      */
-    private CacheStats cacheStats = new CacheStats();
+    private CacheMonitor cacheMonitor;
 
     /**
      * 通过构造方法设置缓存配置
@@ -126,17 +128,12 @@ public abstract class AbstractValueAdaptingCache implements Cache {
         return stats;
     }
 
-    /**
-     * 获取统计信息
-     *
-     * @return CacheStats
-     */
-    @Override
-    public CacheStats getCacheStats() {
-        return cacheStats;
+    public CacheMonitor getCacheMonitor(){
+        if (cacheMonitor != null){
+            return cacheMonitor;
+        }
+        cacheMonitor = new DefaultCacheMonitor();
+        return cacheMonitor;
     }
 
-    public void setCacheStats(CacheStats cacheStats) {
-        this.cacheStats = cacheStats;
-    }
 }

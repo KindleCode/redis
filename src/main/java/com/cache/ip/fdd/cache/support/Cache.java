@@ -1,7 +1,6 @@
 package com.cache.ip.fdd.cache.support;
 
 import com.cache.ip.fdd.cache.manager.CacheManager;
-import com.cache.ip.fdd.cache.stats.CacheStats;
 
 import java.util.concurrent.Callable;
 
@@ -100,10 +99,4 @@ public interface Cache {
      */
     void clear();
 
-    /**
-     * 获取统计信息
-     *
-     * @return {@link CacheStats}
-     */
-    CacheStats getCacheStats();
 }

@@ -90,7 +90,7 @@ public class LayeringAspect {
     }
 
     @Around("cacheEvictPointcut()")
-    public void cacheEvictPointcut(ProceedingJoinPoint joinPoint) throws Throwable {
+    public Object cacheEvictPointcut(ProceedingJoinPoint joinPoint) throws Throwable {
 
         CacheOperationInvoker aopAllianceInvoker = getCacheOperationInvoker(joinPoint);
 
@@ -100,7 +100,7 @@ public class LayeringAspect {
         CacheEvict cacheEvict = AnnotationUtils.findAnnotation(method, CacheEvict.class);
         try {
             // 执行查询缓存方法
-            executeCacheEvict(aopAllianceInvoker, cacheEvict, method, joinPoint.getArgs(), joinPoint.getTarget());
+            return executeCacheEvict(aopAllianceInvoker, cacheEvict, method, joinPoint.getArgs(), joinPoint.getTarget());
         } catch (Exception e) {
             throw e;
         }
@@ -173,7 +173,7 @@ public class LayeringAspect {
      * @param target    target
      * @return {@link Object}
      */
-    private void executeCacheEvict(CacheOperationInvoker invoker, CacheEvict cacheEvict,
+    private Object executeCacheEvict(CacheOperationInvoker invoker, CacheEvict cacheEvict,
                                    Method method, Object[] args, Object target){
 
         Object key = generateKey(cacheEvict.key(), method, args, target);
@@ -186,7 +186,7 @@ public class LayeringAspect {
             cache.evict(key);
         }
         //执行本函数
-        invoker.invoke();
+        return invoker.invoke();
     }
 
     private CacheOperationInvoker getCacheOperationInvoker(ProceedingJoinPoint joinPoint) {
