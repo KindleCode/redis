@@ -1,8 +1,8 @@
 package com.cache.ip.fdd.config;
 
-import com.cache.ip.fdd.aspect.LayeringAspect;
+import com.cache.ip.fdd.aspect.CacheAspect;
 import com.cache.ip.fdd.cache.manager.CacheManager;
-import com.cache.ip.fdd.cache.manager.LayeringCacheManager;
+import com.cache.ip.fdd.cache.manager.RedisCacheManager;
 import com.cache.ip.fdd.service.CacheService;
 
 import org.springframework.context.annotation.Bean;
@@ -18,16 +18,16 @@ public class CacheConfig {
 
     @Bean
     public CacheManager cacheManager(RedisTemplate<String, Object> redisTemplate) {
-        LayeringCacheManager layeringCacheManager = new LayeringCacheManager(redisTemplate);
+        RedisCacheManager redisCacheManager = new RedisCacheManager(redisTemplate);
         // 开启统计功能
-        layeringCacheManager.setStats(true);
-        layeringCacheManager.setCachePrefix("cache.ip.fdd");
-        return layeringCacheManager;
+        redisCacheManager.setStats(true);
+        redisCacheManager.setCachePrefix("cache.ip.fdd");
+        return redisCacheManager;
     }
 
     @Bean
-    public LayeringAspect layeringAspect() {
-        return new LayeringAspect();
+    public CacheAspect layeringAspect() {
+        return new CacheAspect();
     }
 
     @Bean

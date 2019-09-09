@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
  * @author MrCai
  * @date 2019/07/24
  */
-public class LayeringCacheSetting {
+public class CacheSetting {
 
     /**
      * 描述，数据监控页面使用
@@ -23,7 +23,7 @@ public class LayeringCacheSetting {
      */
     private TimeUnit timeUnit;
 
-    public LayeringCacheSetting(Integer expireTime, TimeUnit timeUnit, String depict){
+    public CacheSetting(Integer expireTime, TimeUnit timeUnit, String depict){
         this.expireTime = expireTime;
         this.timeUnit = timeUnit;
         this.depict = depict;

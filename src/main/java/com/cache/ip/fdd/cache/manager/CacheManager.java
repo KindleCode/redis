@@ -1,6 +1,6 @@
 package com.cache.ip.fdd.cache.manager;
 
-import com.cache.ip.fdd.cache.setting.LayeringCacheSetting;
+import com.cache.ip.fdd.cache.setting.CacheSetting;
 import com.cache.ip.fdd.cache.support.Cache;
 
 import java.util.Collection;
@@ -25,10 +25,10 @@ public interface CacheManager {
      * 根据缓存名称返回对应的{@link Cache}，如果没有找到就新建一个并放到容器
      *
      * @param name                 缓存名称
-     * @param layeringCacheSetting 缓存配置
+     * @param cacheSetting 缓存配置
      * @return {@link Cache}
      */
-    Cache getCache(String name, LayeringCacheSetting layeringCacheSetting);
+    Cache getCache(String name, CacheSetting cacheSetting);
 
     /**
      * 获取所有缓存名称的集合

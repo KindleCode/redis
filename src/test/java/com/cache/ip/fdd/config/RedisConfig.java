@@ -50,24 +50,6 @@ public class RedisConfig {
     @Value("${spring.redis.pool.max-wait:-1}")
     private int maxWait;
 
-
-//    @Bean
-//    public JedisConnectionFactory redisConnectionFactory() {
-//        JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
-//        jedisPoolConfig.setMinIdle(minIdle);
-//        jedisPoolConfig.setMaxIdle(maxIdle);
-//        jedisPoolConfig.setMaxTotal(maxActive);
-//        jedisPoolConfig.setMaxWaitMillis(maxWait);
-//
-//        JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory(jedisPoolConfig);
-//        jedisConnectionFactory.setDatabase(database);
-//        jedisConnectionFactory.setHostName(host);
-//        jedisConnectionFactory.setPassword(password);
-//        jedisConnectionFactory.setPort(port);
-//        jedisConnectionFactory.setUsePool(true);
-//        return jedisConnectionFactory;
-//    }
-
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
         ClientResources clientResources = DefaultClientResources.create();

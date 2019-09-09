@@ -1,7 +1,7 @@
 package com.cache.ip.fdd.cache.manager;
 
 import com.cache.ip.fdd.cache.RedisCache;
-import com.cache.ip.fdd.cache.setting.LayeringCacheSetting;
+import com.cache.ip.fdd.cache.setting.CacheSetting;
 import com.cache.ip.fdd.cache.support.Cache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,14 +70,14 @@ public abstract class AbstractCacheManager implements CacheManager, Initializing
     }
 
     @Override
-    public Cache getCache(String name, LayeringCacheSetting layeringCacheSetting) {
+    public Cache getCache(String name, CacheSetting cacheSetting) {
 
         Cache cache = cacheContainer.get(name);
         //暂时只有redis缓存
         if (cache != null){
             return cache;
         }
-        Cache missingCache = getMissingCache(name, layeringCacheSetting);
+        Cache missingCache = getMissingCache(name, cacheSetting);
         cacheContainer.put(name, missingCache);
         return missingCache;
     }
@@ -111,10 +111,10 @@ public abstract class AbstractCacheManager implements CacheManager, Initializing
      * 根据缓存名称在CacheManager中没有找到对应Cache时，通过该方法新建一个对应的Cache实例
      *
      * @param name                 缓存名称
-     * @param layeringCacheSetting 缓存配置
+     * @param cacheSetting 缓存配置
      * @return {@link Cache}
      */
-    protected abstract Cache getMissingCache(String name, LayeringCacheSetting layeringCacheSetting);
+    protected abstract Cache getMissingCache(String name, CacheSetting cacheSetting);
 
     /**
      * 获取缓存容器

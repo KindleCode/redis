@@ -5,7 +5,7 @@ import com.cache.ip.fdd.annotation.CachePut;
 import com.cache.ip.fdd.annotation.Cacheable;
 import com.cache.ip.fdd.cache.expression.CacheOperationExpressionEvaluator;
 import com.cache.ip.fdd.cache.manager.CacheManager;
-import com.cache.ip.fdd.cache.setting.LayeringCacheSetting;
+import com.cache.ip.fdd.cache.setting.CacheSetting;
 import com.cache.ip.fdd.cache.support.Cache;
 import com.cache.ip.fdd.cache.support.CacheOperationInvoker;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -33,7 +33,7 @@ import java.util.Objects;
  * 缓存拦截，用于注册方法信息
  */
 @Aspect
-public class LayeringAspect {
+public class CacheAspect {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private static final String CACHE_KEY_ERROR_MESSAGE = "缓存Key %s 不能为NULL";
@@ -125,10 +125,10 @@ public class LayeringAspect {
         Object key = generateKey(cacheable.key(), method, args, target);
         Assert.notNull(key, String.format(CACHE_KEY_ERROR_MESSAGE, cacheable.key()));
 
-        LayeringCacheSetting layeringCacheSetting = new LayeringCacheSetting(cacheable.expireTime(),cacheable.timeUnit(),cacheable.depict());
+        CacheSetting cacheSetting = new CacheSetting(cacheable.expireTime(),cacheable.timeUnit(),cacheable.depict());
 
         //获取cache
-        Cache cache = cacheManager.getCache(cacheName, layeringCacheSetting);
+        Cache cache = cacheManager.getCache(cacheName, cacheSetting);
 
         return cache.get(key, () -> invoker.invoke());
     }
@@ -150,14 +150,14 @@ public class LayeringAspect {
         Object key = generateKey(cachePut.key(), method, args, target);
         Assert.notNull(key, String.format(CACHE_KEY_ERROR_MESSAGE, cachePut.key()));
 
-        LayeringCacheSetting layeringCacheSetting = new LayeringCacheSetting(cachePut.expireTime(),cachePut.timeUnit(),cachePut.depict());
+        CacheSetting cacheSetting = new CacheSetting(cachePut.expireTime(),cachePut.timeUnit(),cachePut.depict());
 
         //获得值
         Object result = invoker.invoke();
 
         for (String cacheName : cacheNames) {
             // 通过cacheName和缓存配置获取Cache
-            Cache cache = cacheManager.getCache(cacheName, layeringCacheSetting);
+            Cache cache = cacheManager.getCache(cacheName, cacheSetting);
             cache.put(key, result);
         }
         return result;

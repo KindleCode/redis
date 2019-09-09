@@ -6,7 +6,7 @@ package com.cache.ip.fdd.cache.support;
  */
 public enum RedisHitEnum {
 
-    /**缓存命中类型: Cacheable + 手动缓存获取*/
+    /***/
     CACHEABLE(1);
 
     private Integer code;

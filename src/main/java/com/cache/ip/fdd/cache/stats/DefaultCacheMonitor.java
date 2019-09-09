@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * redis Ä¬ÈÏ¼à¿ØÆ÷(cat¼à¿Ø)
+ * redis
  * @author MrCai
  * @date 2019/08/13
  */
@@ -22,7 +22,6 @@ public class DefaultCacheMonitor implements CacheMonitor{
         hitting.append("[" + key +"] - [");
         hitting.append(redisHitEnum.toString() + "]");
 
-        //»º´æÃüÖĞ/Î´ÃüÖĞÈÕÖ¾
         if (hit(value)){
             hitting.append(" - [HIT]");
         }else {
@@ -35,7 +34,7 @@ public class DefaultCacheMonitor implements CacheMonitor{
     }
 
     /**
-     * »º´æÊÇ·ñÃüÖĞ
+     *
      * @param value
      * @return
      */
