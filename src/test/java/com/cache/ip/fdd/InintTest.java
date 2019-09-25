@@ -41,4 +41,9 @@ public class InintTest {
     public void cacheEvit01(){
         cacheService.deleteUser(19230L);
     }
+
+    @Test
+    public void redisTemplateTest(){
+
+    }
 }

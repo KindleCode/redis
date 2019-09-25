@@ -27,7 +27,7 @@ public class RedisCacheKey {
     /**
      * 缓存名称
      */
-    private String cacheName;
+    private String cacheName = "";
 
     /**
      * key前缀
@@ -101,7 +101,12 @@ public class RedisCacheKey {
         if (StringUtils.isEmpty(cachePrefix)){
             //设置前缀异常
         }
-        return prefixSerializer1.serialize(cachePrefix.concat(":").concat(cacheName).concat(":"));
+
+        String concat = cachePrefix.concat(":");
+        if (!StringUtils.isEmpty(cacheName)){
+            concat.concat(cacheName).concat(":");
+        }
+        return prefixSerializer1.serialize(concat);
     }
 
     /**
