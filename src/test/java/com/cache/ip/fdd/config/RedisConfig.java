@@ -1,7 +1,11 @@
 package com.cache.ip.fdd.config;
 
+import com.cache.ip.fdd.aspect.CacheAspect;
+import com.cache.ip.fdd.cache.manager.RedisCacheManager;
 import com.cache.ip.fdd.cache.serializer.FastJsonRedisSerializer;
 import com.cache.ip.fdd.cache.serializer.KryoRedisSerializer;
+import com.cache.ip.fdd.cache.serializer.StringRedisSerializer;
+import com.cache.ip.fdd.operation.RedisService;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,10 +20,8 @@ import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisClientConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
-import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
 import redis.clients.jedis.JedisPoolConfig;
 
 @Configuration
@@ -85,8 +87,8 @@ public class RedisConfig {
         jackson2JsonRedisSerializer.setObjectMapper(om);
 
         // 设置值（value）的序列化采用FastJsonRedisSerializer。
-        redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
-        redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
+        redisTemplate.setHashValueSerializer(fastJsonRedisSerializer);
+        redisTemplate.setValueSerializer(fastJsonRedisSerializer);
         // 设置键（key）的序列化采用StringRedisSerializer。
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
@@ -94,4 +96,26 @@ public class RedisConfig {
         redisTemplate.afterPropertiesSet();
         return redisTemplate;
     }
+
+    @Bean
+    public RedisCacheManager redisCacheManager(RedisTemplate<String, Object> redisTemplate) {
+        RedisCacheManager redisCacheManager = new RedisCacheManager(redisTemplate);
+        // 开启统计功能
+        redisCacheManager.setStats(true);
+        redisCacheManager.setCachePrefix("cache.ip.fdd");
+        return redisCacheManager;
+    }
+
+    @Bean
+    public CacheAspect cacheAspect() {
+        return new CacheAspect();
+    }
+
+    @Bean
+    public RedisService redisService(RedisCacheManager redisCacheManager){
+        RedisService redisService = new RedisService();
+        redisService.setRedisCacheManager(redisCacheManager);
+        return redisService;
+    }
+
 }

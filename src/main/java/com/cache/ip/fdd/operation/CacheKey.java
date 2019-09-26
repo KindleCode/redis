@@ -1,5 +1,8 @@
 package com.cache.ip.fdd.operation;
 
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
 /**
  * redis key 操作接口
  * @author MrCai
@@ -12,14 +15,14 @@ public interface CacheKey {
      * @param key
      * @return
      */
-    Boolean exists(String key);
+    Boolean exists(Object key);
 
     /**
      * 删除key
      * @param key
      * @return
      */
-    Boolean del(String key);
+    Boolean del(Object key);
 
     /**
      * 设置过期时间
@@ -27,7 +30,7 @@ public interface CacheKey {
      * @param expire
      * @return
      */
-    Boolean expire(String key, Integer expire);
+    Boolean expire(Object key, Long expire, TimeUnit unit);
 
     /**
      * 时间戳设置过期时间
@@ -35,13 +38,6 @@ public interface CacheKey {
      * @param expire
      * @return
      */
-    Boolean expireAt(String key, Long expire);
-
-    /**
-     * 获取key的过期时间
-     * @param key
-     * @return
-     */
-    Long ttl(String key);
+    Boolean expireAt(Object key, Date expire);
 
 }

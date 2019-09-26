@@ -15,7 +15,10 @@ public interface CacheList extends CacheKey{
      * @param values
      * @return 执行 LPUSH 命令后，列表的长度
      */
-    Long lpush(String key, String... values);
+    Long lpush(Object key, Object... values);
+
+
+    Long lpush(Object key, Object value);
 
     /**
      * 将一个或多个值 value 插入到列表 key 的表尾(最右边)
@@ -23,28 +26,30 @@ public interface CacheList extends CacheKey{
      * @param values
      * @return 执行 RPUSH 操作后，表的长度
      */
-    Long rpush(String key, String... values);
+    Long rpush(Object key, Object... values);
+
+    Long rpush(Object key, Object value);
 
     /**
      * 移除并返回列表 key 的头元素
      * @param key
      * @return 列表的头元素。 当 key 不存在时，返回 null
      */
-    String lpop(String key);
+    Object lpop(Object key);
 
     /**
      * 移除并返回列表 key 的尾元素
      * @param key
      * @return 列表的尾元素。 当 key 不存在时，返回 null
      */
-    String rpop(String key);
+    Object rpop(Object key);
 
     /**
      * 返回列表 key 的长度
      * @param key
      * @return 列表 key 的长度
      */
-    Long llen(String key);
+    Long llen(Object key);
 
     /**
      * 返回列表 key 中，下标为 index 的元素
@@ -54,7 +59,7 @@ public interface CacheList extends CacheKey{
      * @param index
      * @return 列表中下标为 index 的元素。 如果 index 参数的值不在列表的区间范围内(out of range)，返回 null
      */
-    String lindex(String key, Long index);
+    Object lindex(Object key, Long index);
 
     /**
      * 将值 value 插入到列表 key 当中，位于值 pivot 之前或之后
@@ -75,7 +80,7 @@ public interface CacheList extends CacheKey{
      * @param value
      * @return 操作成功返回 ok ，否则返回错误信息
      */
-    String lset(String key, Long index, String value);
+    void lset(Object key, Long index, Object value);
 
     /**
      * 返回列表 key 中指定区间内的元素，区间以偏移量 start 和 stop 指定
@@ -86,7 +91,7 @@ public interface CacheList extends CacheKey{
      * @param stop
      * @return 一个列表，包含指定区间内的元素
      */
-    List<String> lrange(String key, Long start, Long stop);
+    List<String> lrange(Object key, Long start, Long stop);
 
     /**
      * 对一个列表进行修剪(trim)，就是说，让列表只保留指定区间内的元素，不在指定区间之内的元素都将被删除
@@ -95,7 +100,7 @@ public interface CacheList extends CacheKey{
      * @param stop
      * @return 命令执行成功时，返回 ok
      */
-    String ltrim(String key, Long start, Long stop);
+    void ltrim(Object key, Long start, Long stop);
 
     //TODO 阻塞队列 blpop
 

@@ -1,7 +1,7 @@
 package com.cache.ip.fdd.cache;
 
+import com.cache.ip.fdd.cache.serializer.StringRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 

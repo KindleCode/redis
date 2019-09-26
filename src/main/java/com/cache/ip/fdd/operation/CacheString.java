@@ -14,7 +14,7 @@ public interface CacheString extends CacheKey{
      * @param value
      * @return
      */
-    String set(String key, String value);
+    void set(Object key, Object value);
 
     /**
      * 将key的值设为value，当且仅当key不存在。
@@ -23,30 +23,14 @@ public interface CacheString extends CacheKey{
      * @param value
      * @return
      */
-    Long setnx(String key, String value);
-
-    /**
-     * 设置key的过期时间，以秒为单位
-     * @param key
-     * @param seconds
-     * @param value
-     * @return
-     */
-    String setex(String key, Integer seconds, String value);
+    Boolean setnx(Object key, Object value);
 
     /**
      * 返回与键key相关联的字符串值
      * @param key
      * @return
      */
-    Object get(String key);
-
-    /**
-     * 返回键key存储的字符串值的长度
-     * @param key
-     * @return
-     */
-    Long strlen(String key);
+    Object get(Object key);
 
     /**
      * 如果键 key 已经存在并且它的值是一个字符串， APPEND 命令将把 value 追加到键 key 现有值的末尾
@@ -55,22 +39,7 @@ public interface CacheString extends CacheKey{
      * @param value
      * @return
      */
-    Long append(String key, String value);
-
-    /**
-     * 为键 key 储存的数字值减上一
-     * @param key
-     * @return
-     */
-    Long decr(String key);
-
-    /**
-     * 为键 key 储存的数字值加上减量 count
-     * @param key
-     * @param count
-     * @return
-     */
-    Long decrBy(String key, Long count);
+    Integer append(Object key, String value);
 
     /**
      * 为键 key 储存的数字值加上增量 count
@@ -78,13 +47,7 @@ public interface CacheString extends CacheKey{
      * @param count
      * @return
      */
-    Long incrBy(String key, Long count);
+    Long incrBy(Object key, Long count);
 
-    /**
-     * 为键 key 储存的数字值加上一
-     * @param key
-     * @return
-     */
-    Long incr(String key);
 
 }

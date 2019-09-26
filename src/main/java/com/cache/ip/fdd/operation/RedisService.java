@@ -1,8 +1,11 @@
 package com.cache.ip.fdd.operation;
 
+import org.springframework.data.redis.core.ZSetOperations;
+
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author MrCai
@@ -11,230 +14,208 @@ import java.util.Set;
 public class RedisService extends CacheBaseCommand implements CacheString, CacheList, CacheSet, CacheZSet{
 
     @Override
-    public Boolean exists(String key) {
-
-        return null;
+    public Boolean exists(Object key) {
+        return getRedisTemplate().hasKey(getRedisCacheKey(key).getKey());
     }
 
     @Override
-    public Boolean del(String key) {
+    public Boolean del(Object key) {
         return getRedisTemplate().delete(getRedisCacheKey(key).getKey());
     }
 
     @Override
-    public Boolean expire(String key, Integer expire) {
-        return null;
+    public Boolean expire(Object key, Long expire, TimeUnit unit) {
+        return getRedisTemplate().expire(getRedisCacheKey(key).getKey(), expire, unit);
     }
 
     @Override
-    public Boolean expireAt(String key, Long expire) {
-        return null;
+    public Boolean expireAt(Object key, Date expire) {
+        return getRedisTemplate().expireAt(getRedisCacheKey(key).getKey(), expire);
     }
 
     @Override
-    public Long ttl(String key) {
-        return null;
-    }
-
-
-    @Override
-    public Long lpush(String key, String... values) {
-        return null;
+    public Long lpush(Object key, Object value) {
+        return getRedisTemplate().opsForList().leftPush(getRedisCacheKey(key).getKey(), value);
     }
 
     @Override
-    public Long rpush(String key, String... values) {
-        return null;
+    public Long lpush(Object key, Object... values) {
+        return  getRedisTemplate().opsForList().leftPushAll(getRedisCacheKey(key).getKey(), values);
     }
 
     @Override
-    public String lpop(String key) {
-        return null;
+    public Long rpush(Object key, Object value) {
+        return getRedisTemplate().opsForList().rightPush(getRedisCacheKey(key).getKey(), value);
     }
 
     @Override
-    public String rpop(String key) {
-        return null;
+    public Long rpush(Object key, Object... values) {
+        return getRedisTemplate().opsForList().rightPushAll(getRedisCacheKey(key).getKey(), values);
     }
 
     @Override
-    public Long llen(String key) {
-        return null;
+    public Object lpop(Object key) {
+        return getRedisTemplate().opsForList().leftPop(getRedisCacheKey(key).getKey());
     }
 
     @Override
-    public String lindex(String key, Long index) {
-        return null;
+    public Object rpop(Object key) {
+        return getRedisTemplate().opsForList().rightPop(getRedisCacheKey(key).getKey());
     }
 
     @Override
-    public String lset(String key, Long index, String value) {
-        return null;
+    public Long llen(Object key) {
+        return getRedisTemplate().opsForList().size(getRedisCacheKey(key).getKey());
     }
 
     @Override
-    public List<String> lrange(String key, Long start, Long stop) {
-        return null;
+    public Object lindex(Object key, Long index) {
+        return getRedisTemplate().opsForList().index(getRedisCacheKey(key).getKey(), index);
     }
 
     @Override
-    public String ltrim(String key, Long start, Long stop) {
-        return null;
+    public void lset(Object key, Long index, Object value) {
+        getRedisTemplate().opsForList().set(getRedisCacheKey(key).getKey(), index, value);
     }
 
     @Override
-    public Long sadd(String key, String... members) {
-        return null;
+    public List<String> lrange(Object key, Long start, Long stop) {
+        return getRedisTemplate().opsForList().range(getRedisCacheKey(key).getKey(), start, stop);
     }
 
     @Override
-    public Boolean sismember(String key, String member) {
-        return null;
+    public void ltrim(Object key, Long start, Long stop) {
+        getRedisTemplate().opsForList().trim(getRedisCacheKey(key).getKey(), start, stop);
     }
 
     @Override
-    public String spop(String key) {
-        return null;
+    public Long sadd(Object key, Object... members) {
+        return getRedisTemplate().opsForSet().add(getRedisCacheKey(key).getKey(), members);
     }
 
     @Override
-    public Long srem(String key, String... members) {
-        return null;
+    public Boolean sismember(Object key, Object member) {
+        return getRedisTemplate().opsForSet().isMember(getRedisCacheKey(key).getKey(), member);
     }
 
     @Override
-    public Long scard(String key) {
-        return null;
+    public Object spop(Object key) {
+        return getRedisTemplate().opsForSet().pop(getRedisCacheKey(key).getKey());
     }
 
     @Override
-    public Set<String> smembers(String key) {
-        return null;
+    public Long srem(Object key, Object... members) {
+        return getRedisTemplate().opsForSet().remove(getRedisCacheKey(key).getKey(), members);
     }
 
     @Override
-    public String set(String key, String value) {
-        return null;
+    public Long scard(Object key) {
+        return getRedisTemplate().opsForSet().size(getRedisCacheKey(key).getKey());
     }
 
     @Override
-    public Long setnx(String key, String value) {
-        return null;
+    public Set<String> smembers(Object key) {
+        return getRedisTemplate().opsForSet().members(getRedisCacheKey(key).getKey());
     }
 
     @Override
-    public String setex(String key, Integer seconds, String value) {
-        return null;
+    public void set(Object key, Object value) {
+         getRedisTemplate().opsForValue().set(getRedisCacheKey(key).getKey(), value);
     }
 
     @Override
-    public Object get(String key) {
+    public Boolean setnx(Object key, Object value) {
+        return getRedisTemplate().opsForValue().setIfAbsent(getRedisCacheKey(key).getKey(), value);
+    }
+
+    @Override
+    public Object get(Object key) {
         return getRedisTemplate().opsForValue().get(getRedisCacheKey(key).getKey());
     }
 
     @Override
-    public Long strlen(String key) {
-        return null;
+    public Integer append(Object key, String value) {
+        return getRedisTemplate().opsForValue().append(getRedisCacheKey(key).getKey(), value);
     }
 
     @Override
-    public Long append(String key, String value) {
-        return null;
+    public Long incrBy(Object key, Long count) {
+        return getRedisTemplate().opsForValue().increment(getRedisCacheKey(key), count);
     }
 
     @Override
-    public Long decr(String key) {
-        return null;
+    public Boolean zadd(Object key, Object value, Double score) {
+        return getRedisTemplate().opsForZSet().add(getRedisCacheKey(key).getKey(), value, score);
     }
 
     @Override
-    public Long decrBy(String key, Long count) {
-        return null;
+    public Long zadd(Object key, Set<ZSetOperations.TypedTuple<Object>> tuples) {
+        return getRedisTemplate().opsForZSet().add(getRedisCacheKey(key).getKey(), tuples);
     }
 
     @Override
-    public Long incrBy(String key, Long count) {
-        return null;
+    public Double zscore(Object key, String value) {
+        return getRedisTemplate().opsForZSet().score(getRedisCacheKey(key).getKey(), value);
     }
 
     @Override
-    public Long incr(String key) {
-        return null;
+    public Double zincrby(Object key, String value, double score) {
+        return getRedisTemplate().opsForZSet().incrementScore(getRedisCacheKey(key).getKey(), value, score);
     }
 
     @Override
-    public Long zadd(String key, double score, String member) {
-        return null;
+    public Long zcard(Object key) {
+        return getRedisTemplate().opsForZSet().zCard(getRedisCacheKey(key).getKey());
     }
 
     @Override
-    public Long zadd(String key, Map<String, Double> scoreMembers) {
-        return null;
+    public Long zcount(Object key, double min, double max) {
+        return getRedisTemplate().opsForZSet().count(getRedisCacheKey(key).getKey(), min, max);
     }
 
     @Override
-    public Double zscore(String key, String member) {
-        return null;
+    public Set<String> zrange(Object key, long start, long end) {
+        return getRedisTemplate().opsForZSet().range(getRedisCacheKey(key).getKey(), start, end);
     }
 
     @Override
-    public Double zincrby(String key, double score, String member) {
-        return null;
+    public Set<String> zrevrange(Object key, long start, long end) {
+        return getRedisTemplate().opsForZSet().reverseRange(getRedisCacheKey(key).getKey(), start, end);
     }
 
     @Override
-    public Long zcard(String key) {
-        return null;
+    public Set<String> zrangeByScore(Object key, double min, double max) {
+        return getRedisTemplate().opsForZSet().rangeByScore(getRedisCacheKey(key).getKey(), min, max);
     }
 
     @Override
-    public Long zcount(String key, double min, double max) {
-        return null;
+    public Set<String> zrevrangeByScore(Object key, double max, double min) {
+        return getRedisTemplate().opsForZSet().reverseRangeByScore(getRedisCacheKey(key), min, max);
     }
 
     @Override
-    public Set<String> zrange(String key, long start, long end) {
-        return null;
+    public Long zrank(Object key, Object value) {
+        return getRedisTemplate().opsForZSet().rank(getRedisCacheKey(key).getKey(), value);
     }
 
     @Override
-    public Set<String> zrevrange(String key, long start, long end) {
-        return null;
+    public Long zrevrank(Object key, Object value) {
+        return getRedisTemplate().opsForZSet().reverseRank(getRedisCacheKey(key).getKey(), value);
     }
 
     @Override
-    public Set<String> zrangeByScore(String key, double min, double max) {
-        return null;
+    public Long zrem(Object key, Object... value) {
+        return getRedisTemplate().opsForZSet().remove(getRedisCacheKey(key).getKey(), value);
     }
 
     @Override
-    public Set<String> zrevrangeByScore(String key, double max, double min) {
-        return null;
+    public Long zremrangeByRank(Object key, long start, long end) {
+        return getRedisTemplate().opsForZSet().removeRange(getRedisCacheKey(key).getKey(), start, end);
     }
 
     @Override
-    public Long zrank(String key, String member) {
-        return null;
-    }
-
-    @Override
-    public Long zrevrank(String key, String member) {
-        return null;
-    }
-
-    @Override
-    public Long zrem(String key, String... member) {
-        return null;
-    }
-
-    @Override
-    public Long zremrangeByRank(String key, long start, long end) {
-        return null;
-    }
-
-    @Override
-    public Long zremrangeByScore(String key, double start, double end) {
-        return null;
+    public Long zremrangeByScore(Object key, double start, double end) {
+        return getRedisTemplate().opsForZSet().removeRangeByScore(getRedisCacheKey(key).getKey(), start, end);
     }
 
 }

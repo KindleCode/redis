@@ -3,7 +3,7 @@ apply plugin: 'java'
 apply plugin: "project-report"
 
 group 'com.fangdd'
-version '1.0.3.3'
+version '1.0.3.7'
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
@@ -47,7 +47,7 @@ sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
 repositories {
-    maven { url "http://nexus.nh.fangdd.cn/nexus/content/groups/public/" }
+    maven { url "http://nexus.fangdd.cn/nexus/content/groups/public/" }
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
