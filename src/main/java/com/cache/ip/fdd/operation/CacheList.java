@@ -62,18 +62,6 @@ public interface CacheList extends CacheKey{
     Object lindex(Object key, Long index);
 
     /**
-     * 将值 value 插入到列表 key 当中，位于值 pivot 之前或之后
-     * 当 pivot 不存在于列表 key 时，不执行任何操作
-     * 当 key 不存在时， key 被视为空列表，不执行任何操作
-     * @param key
-     * @param where
-     * @param pivot
-     * @param value
-     * @return 如果命令执行成功，返回插入操作完成之后，列表的长度。 如果没有找到 pivot ，返回 -1 。 如果 key 不存在或为空列表，返回 0
-     */
-//    Long linsert(String key, ListPosition where, String pivot, String value);
-
-    /**
      * 将列表 key 下标为 index 的元素的值设置为 value
      * @param key
      * @param index

@@ -2,16 +2,14 @@ package com.cache.ip.fdd.operation;
 
 import org.springframework.data.redis.core.ZSetOperations;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
  * @author MrCai
  * @date 2019/09/24
  */
-public class RedisService extends CacheBaseCommand implements CacheString, CacheList, CacheSet, CacheZSet{
+public class RedisService extends CacheBaseCommand implements CacheString, CacheList, CacheSet, CacheZSet,CacheHash{
 
     @Override
     public Boolean exists(Object key) {
@@ -51,6 +49,41 @@ public class RedisService extends CacheBaseCommand implements CacheString, Cache
     @Override
     public Long rpush(Object key, Object... values) {
         return getRedisTemplate().opsForList().rightPushAll(getRedisCacheKey(key).getKey(), values);
+    }
+
+    @Override
+    public void hset(Object key, Object field, Object value) {
+        getRedisTemplate().opsForHash().put(getRedisCacheKey(key).getKey(), field, value);
+    }
+
+    @Override
+    public Boolean hsetnx(Object key, Object field, Object value) {
+        return getRedisTemplate().opsForHash().putIfAbsent(getRedisCacheKey(key).getKey(), field, value);
+    }
+
+    @Override
+    public Object hget(Object key, Object field) {
+        return getRedisTemplate().opsForHash().get(getRedisCacheKey(key).getKey(), field);
+    }
+
+    @Override
+    public Boolean hexists(Object key, Object field) {
+        return getRedisTemplate().opsForHash().hasKey(getRedisCacheKey(key).getKey(), field);
+    }
+
+    @Override
+    public Long hdel(Object key, Object... fields) {
+        return getRedisTemplate().opsForHash().delete(getRedisCacheKey(key).getKey(), fields);
+    }
+
+    @Override
+    public void hmset(Object key, Map<Object, Object> hash) {
+        getRedisTemplate().opsForHash().putAll(getRedisCacheKey(key).getKey(), hash);
+    }
+
+    @Override
+    public List<Object> hmget(Object key, Collection fields) {
+        return getRedisTemplate().opsForHash().multiGet(getRedisCacheKey(key).getKey(), fields);
     }
 
     @Override

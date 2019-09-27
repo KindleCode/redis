@@ -16,10 +16,7 @@ import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -313,6 +310,52 @@ public class InintTest {
     public void zreverseRangeByScoreWithScoresTest(){
         Set<ZSetOperations.TypedTuple> typedTuples = redisService.zreverseRangeByScoreWithScores("redis:zset", 0, 100);
         System.out.println(typedTuples);
+    }
+
+    @Test
+    public void hsetTest(){
+        redisService.hset("redis:hash", "setfly", new User());
+        redisService.hset("redis:hash", "string", "这是字符串&*（）^&*()");
+        redisService.hset("redis:hash", "num", 11222);
+
+    }
+
+    @Test
+    public void hsetnxTest(){
+        Boolean num = redisService.hsetnx("redis:hash", "num", 233333);
+        System.out.println(num);
+    }
+
+    @Test
+    public void hgetTest(){
+        Object string = redisService.hget("redis:hash", "string");
+        System.out.println(string);
+    }
+
+    @Test
+    public void hexistsTest(){
+        Boolean setfly = redisService.hexists("redis:hash", "setfly");
+        System.out.println(setfly);
+    }
+
+    @Test
+    public void hdelTest(){
+        Long num = redisService.hdel("redis:hash", "num");
+        System.out.println(num);
+    }
+
+    @Test
+    public void hmsetTest(){
+        Map<Object,Object> map = new HashMap<>();
+        map.put("user",new User());
+        map.put("one","one");
+        redisService.hmset("redis:hash",map);
+    }
+
+    @Test
+    public void hmgetTest(){
+        List<Object> hmget = redisService.hmget("redis:hash", Arrays.asList("user", "setfly"));
+        System.out.println(1);
     }
 
 
