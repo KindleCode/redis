@@ -23,16 +23,6 @@ public interface CacheZSet extends CacheKey{
     Boolean zadd(Object key, Object value, Double score);
 
     /**
-     * 将一个 member 元素及其 score 值加入到有序集 key 当中
-     * @param key
-     * @param score
-     * @param member
-     * @param params nx表示如果key1不存在则插入 / xx表示如果key存在才作插入(更新)，否则不做插入 / ch表示返回被修改的元素个数
-     * @return 被成功添加的新成员的数量，不包括那些被更新的、已经存在的成员
-     */
-//    Long zadd(String key, Double score, String member, ZAddParams params);
-
-    /**
      * 将多个 member 元素及其 score 值加入到有序集 key 当中
      * @param key
      * @param tuples
@@ -116,10 +106,11 @@ public interface CacheZSet extends CacheKey{
      * @param min
      * @return
      */
-    Set<String> zrevrangeByScore(Object key, double max, double min);
+    Set<String> zrevrangeByScore(Object key, double min, double max);
 
     /**
      * 返回有序集 key 中成员 member 的排名。其中有序集成员按 score 值递增(从小到大)顺序排列
+     * 排序从 0 开始
      * @param key
      * @param value
      * @return
@@ -128,9 +119,10 @@ public interface CacheZSet extends CacheKey{
 
     /**
      * 返回有序集 key 中成员 member 的排名。其中有序集成员按 score 值递减(从大到小)排序
+     * 排序从 0 开始
      * @param key
      * @param value
-     * @return
+     * @return 所在的位置
      */
     Long zrevrank(Object key, Object value);
 
@@ -159,6 +151,24 @@ public interface CacheZSet extends CacheKey{
      * @return 被移除成员的数量
      */
     Long zremrangeByScore(Object key, double start, double end);
+
+    /**
+     * 分数排序，返回分数
+     * @param key
+     * @param min
+     * @param max
+     * @return
+     */
+    Set<ZSetOperations.TypedTuple> zrangeByScoreWithScores(Object key, double min, double max);
+
+    /**
+     * 分数排序，返回分数
+     * @param key
+     * @param min
+     * @param max
+     * @return
+     */
+    Set<ZSetOperations.TypedTuple> zreverseRangeByScoreWithScores(Object key, double min, double max);
 
     //其余的命令 http://redisdoc.com/sorted_set/index.html
 

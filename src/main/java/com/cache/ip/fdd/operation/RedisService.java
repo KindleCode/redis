@@ -140,7 +140,7 @@ public class RedisService extends CacheBaseCommand implements CacheString, Cache
 
     @Override
     public Long incrBy(Object key, Long count) {
-        return getRedisTemplate().opsForValue().increment(getRedisCacheKey(key), count);
+        return getRedisTemplate().opsForValue().increment(getRedisCacheKey(key).getKey(), count);
     }
 
     @Override
@@ -189,8 +189,8 @@ public class RedisService extends CacheBaseCommand implements CacheString, Cache
     }
 
     @Override
-    public Set<String> zrevrangeByScore(Object key, double max, double min) {
-        return getRedisTemplate().opsForZSet().reverseRangeByScore(getRedisCacheKey(key), min, max);
+    public Set<String> zrevrangeByScore(Object key, double min, double max) {
+        return getRedisTemplate().opsForZSet().reverseRangeByScore(getRedisCacheKey(key).getKey(), min, max);
     }
 
     @Override
@@ -216,6 +216,16 @@ public class RedisService extends CacheBaseCommand implements CacheString, Cache
     @Override
     public Long zremrangeByScore(Object key, double start, double end) {
         return getRedisTemplate().opsForZSet().removeRangeByScore(getRedisCacheKey(key).getKey(), start, end);
+    }
+
+    @Override
+    public Set<ZSetOperations.TypedTuple> zrangeByScoreWithScores(Object key, double min, double max){
+        return getRedisTemplate().opsForZSet().rangeByScoreWithScores(getRedisCacheKey(key).getKey(), min, max);
+    }
+
+    @Override
+    public Set<ZSetOperations.TypedTuple> zreverseRangeByScoreWithScores(Object key, double min, double max){
+        return getRedisTemplate().opsForZSet().reverseRangeByScoreWithScores(getRedisCacheKey(key).getKey(), min, max);
     }
 
 }

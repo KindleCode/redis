@@ -9,12 +9,17 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.DefaultTypedTuple;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -53,7 +58,7 @@ public class InintTest {
 
     @Test
     public void redisTemplateTest(){
-        redisTemplate.opsForValue().set("redis:list1", "��������%����&*��%^&*(");
+        redisTemplate.opsForValue().set("redis:list1", "中文中你问啊……&*（^&*()");
         Object o = redisTemplate.opsForValue().get("redis:list1");
         System.out.println(1);
     }
@@ -68,7 +73,7 @@ public class InintTest {
     @Test
     public void setTest(){
         User user = new User();
-        redisService.set("redis:user","������%^&*()(");
+        redisService.set("redis:user","");
     }
 
     @Test
@@ -115,7 +120,7 @@ public class InintTest {
 
     @Test
     public void lpushmoreTest(){
-        Long lpush = redisService.lpush("redis:list", "11",22,"@#$%^&*(����");
+        Long lpush = redisService.lpush("redis:list", "6666",9999,"这里是中文（（（**……%");
         System.out.println(lpush);
     }
 
@@ -126,6 +131,189 @@ public class InintTest {
 
     }
 
+    @Test
+    public void lsetTest(){
+        redisService.lset("redis:list",0L,"中文^&*(#￥%……&*（");
+    }
+
+    @Test
+    public void lrangeTest(){
+        List<String> lrange = redisService.lrange("redis:list", 0L, 3L);
+        System.out.println(1);
+    }
+
+    @Test
+    public void ltrimTest(){
+        redisService.ltrim("redis:list",0L,1L);
+    }
+
+    @Test
+    public void saddTest(){
+        Long a = redisService.sadd("redis:set", new User(), "好啊", "asd88^^%……&*（&￥");
+        System.out.println(a);
+    }
+
+    @Test
+    public void sismemberTest(){
+        Boolean sismember = redisService.sismember("redis:set", "好啊");
+        Assert.assertTrue(sismember);
+    }
+
+    @Test
+    public void spopTest(){
+        Object spop = redisService.spop("redis:set");
+        System.out.println(spop);
+    }
+
+    @Test
+    public void sremTest(){
+        Long a = redisService.srem("redis:set", "好啊");
+        System.out.println(a);
+    }
+
+    @Test
+    public void scardTest(){
+        Long scard = redisService.scard("redis:set");
+        System.out.println(scard);
+    }
+
+    @Test
+    public void smembersTest(){
+        Set<String> smembers = redisService.smembers("redis:set");
+        System.out.println(smembers);
+    }
+
+    @Test
+    public void setnxTest(){
+        Boolean setnx = redisService.setnx("redis:value", "中文&*（）（（（");
+        System.out.println(setnx);
+    }
+
+    @Test
+    public void getTest(){
+        Object o = redisService.get("redis:value");
+        System.out.println(o);
+    }
+
+    @Test
+    public void appendTest(){
+        Integer a = redisService.append("redis:value", "qwqwqwqw这是添加的文字");
+        System.out.println(1);
+    }
+
+    @Test
+    public void incrByTest(){
+        Long aLong = redisService.incrBy("redis:value", 79L);
+        System.out.println(aLong);
+    }
+
+    @Test
+    public void zaddTest(){
+        Boolean zadd = redisService.zadd("redis:zset", "小明", 79.6);
+        System.out.println(zadd);
+    }
+
+    @Test
+    public void zaddmoreTest(){
+
+        ZSetOperations.TypedTuple<Object> objectTypedTuple1 = new DefaultTypedTuple<Object>("zset-5",9.6);
+        ZSetOperations.TypedTuple<Object> objectTypedTuple2 = new DefaultTypedTuple<Object>("zset-6",19.9);
+        Set<ZSetOperations.TypedTuple<Object>> tuples = new HashSet<ZSetOperations.TypedTuple<Object>>();
+        tuples.add(objectTypedTuple1);
+        tuples.add(objectTypedTuple2);
+        Long zadd = redisService.zadd("redis:zset", tuples);
+        System.out.println(zadd);
+    }
+
+    @Test
+    public void zscoreTest(){
+        Double zscore = redisService.zscore("redis:zset", "小明");
+        System.out.println(1);
+    }
+
+    @Test
+    public void zincrbyTest(){
+        Double zincrby = redisService.zincrby("redis:zset", "zset-6", 10.1);
+        System.out.println(zincrby);
+    }
+
+    @Test
+    public void zcardTest(){
+        Long zcard = redisService.zcard("redis:zset");
+        System.out.println(zcard);
+    }
+
+    @Test
+    public void zcountTest(){
+        Long zcount = redisService.zcount("redis:zset", 11, 1000);
+        System.out.println(zcount);
+    }
+
+    @Test
+    public void zrangeTest(){
+        Set<String> zrange = redisService.zrange("redis:zset", 0, 2);
+        System.out.println(zrange);
+    }
+
+    @Test
+    public void zrevrangeTest(){
+        Set<String> zrange = redisService.zrevrange("redis:zset", 0, 2);
+        System.out.println(zrange);
+    }
+
+    @Test
+    public void zrangeByScoreTest(){
+        Set<String> strings = redisService.zrangeByScore("redis:zset", 10, 100);
+        System.out.println(strings);
+    }
+
+    @Test
+    public void zrevrangeByScoreTest(){
+        Set<String> strings = redisService.zrevrangeByScore("redis:zset", 0, 200);
+        System.out.println(strings);
+    }
+
+    @Test
+    public void zrankTest(){
+        Long zrank = redisService.zrank("redis:zset", "zset-5");
+        System.out.println(zrank);
+    }
+
+    @Test
+    public void zrevrankTest(){
+        Long zrevrank = redisService.zrevrank("redis:zset", "zset-5");
+        System.out.println(zrevrank);
+    }
+
+    @Test
+    public void zremTest(){
+        Long zrem = redisService.zrem("redis:zset", "zset-6");
+        System.out.println(zrem);
+    }
+
+    @Test
+    public void zremrangeByRankTest(){
+        Long aLong = redisService.zremrangeByRank("redis:zset", 0, 3);
+        System.out.println(aLong);
+    }
+
+    @Test
+    public void zremrangeByScoreTest(){
+        Long aLong = redisService.zremrangeByScore("redis:zset", 0, 10);
+        System.out.println(aLong);
+    }
+
+    @Test
+    public void zrangeByScoreWithScoresTest(){
+        Set<ZSetOperations.TypedTuple> typedTuples = redisService.zrangeByScoreWithScores("redis:zset", 0, 100);
+        System.out.println(typedTuples);
+    }
+
+    @Test
+    public void zreverseRangeByScoreWithScoresTest(){
+        Set<ZSetOperations.TypedTuple> typedTuples = redisService.zreverseRangeByScoreWithScores("redis:zset", 0, 100);
+        System.out.println(typedTuples);
+    }
 
 
 }

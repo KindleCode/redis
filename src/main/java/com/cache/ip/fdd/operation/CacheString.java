@@ -43,6 +43,7 @@ public interface CacheString extends CacheKey{
 
     /**
      * 为键 key 储存的数字值加上增量 count
+     * value不是数值类型 InvalidDataAccessApiUsageException
      * @param key
      * @param count
      * @return
