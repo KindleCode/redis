@@ -112,7 +112,7 @@ public class RedisService extends CacheBaseCommand implements CacheString, Cache
     }
 
     @Override
-    public List<String> lrange(Object key, Long start, Long stop) {
+    public List lrange(Object key, Long start, Long stop) {
         return getRedisTemplate().opsForList().range(getRedisCacheKey(key).getKey(), start, stop);
     }
 

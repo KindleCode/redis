@@ -66,7 +66,6 @@ public interface CacheList extends CacheKey{
      * @param key
      * @param index
      * @param value
-     * @return 操作成功返回 ok ，否则返回错误信息
      */
     void lset(Object key, Long index, Object value);
 
@@ -79,14 +78,13 @@ public interface CacheList extends CacheKey{
      * @param stop
      * @return 一个列表，包含指定区间内的元素
      */
-    List<String> lrange(Object key, Long start, Long stop);
+    List lrange(Object key, Long start, Long stop);
 
     /**
      * 对一个列表进行修剪(trim)，就是说，让列表只保留指定区间内的元素，不在指定区间之内的元素都将被删除
      * @param key
      * @param start
      * @param stop
-     * @return 命令执行成功时，返回 ok
      */
     void ltrim(Object key, Long start, Long stop);
 

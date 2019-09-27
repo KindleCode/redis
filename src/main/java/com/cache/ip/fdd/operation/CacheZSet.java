@@ -31,15 +31,6 @@ public interface CacheZSet extends CacheKey{
     Long zadd(Object key, Set<ZSetOperations.TypedTuple<Object>> tuples);
 
     /**
-     * 将多个 member 元素及其 score 值加入到有序集 key 当中
-     * @param key
-     * @param scoreMembers
-     * @param params nx表示如果key1不存在则插入 / xx表示如果key存在才作插入(更新)，否则不做插入 / ch表示返回被修改的元素个数
-     * @return 被成功添加的新成员的数量，不包括那些被更新的、已经存在的成员
-     */
-//    Long zadd(String key, Map<String, Double> scoreMembers, ZAddParams params);
-
-    /**
      * 返回有序集 key 中，成员 member 的 score 值
      * @param key
      * @param value

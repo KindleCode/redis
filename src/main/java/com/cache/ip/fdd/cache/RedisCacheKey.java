@@ -104,7 +104,7 @@ public class RedisCacheKey {
 
         String concat = cachePrefix.concat(":");
         if (!StringUtils.isEmpty(cacheName)){
-            concat.concat(cacheName).concat(":");
+            concat = concat.concat(cacheName).concat(":");
         }
         return prefixSerializer1.serialize(concat);
     }

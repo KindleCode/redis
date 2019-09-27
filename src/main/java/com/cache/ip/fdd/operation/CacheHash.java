@@ -22,19 +22,11 @@ public interface CacheHash extends CacheKey{
     void hset(Object key, Object field, Object value);
 
     /**
-     * 将哈希表 hash 中域 多个field 的值设置为 value
-     * @param key
-     * @param hash
-     * @return
-     */
-//    Long hset(String key,Map<String,String> hash);
-
-    /**
      * 当且仅当域 field 尚未存在于哈希表的情况下， 将它的值设置为 value
      * @param key
      * @param field
      * @param value
-     * @return HSETNX 命令在设置成功时返回 1 ， 在给定域已经存在而放弃执行设置操作时返回 0
+     * @return HSETNX 命令在设置成功时返回 true ， 在给定域已经存在而放弃执行设置操作时返回 false
      */
     Boolean hsetnx(Object key, Object field, Object value);
 

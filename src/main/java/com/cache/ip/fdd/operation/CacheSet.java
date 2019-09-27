@@ -21,7 +21,7 @@ public interface CacheSet extends CacheKey{
      * 判断 member 元素是否集合 key 的成员
      * @param key
      * @param member
-     * @return 如果 member 元素是集合的成员，返回 1 。 如果 member 元素不是集合的成员，或 key 不存在，返回 0
+     * @return 如果 member 元素是集合的成员，返回 Ture 。 如果 member 元素不是集合的成员，或 key 不存在，返回 False
      */
     Boolean sismember(Object key, Object member);
 
