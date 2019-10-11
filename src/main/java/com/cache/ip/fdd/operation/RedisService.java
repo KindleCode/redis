@@ -1,5 +1,8 @@
 package com.cache.ip.fdd.operation;
 
+import com.cache.ip.fdd.cache.stats.CacheMonitor;
+import com.cache.ip.fdd.cache.stats.DefaultCacheMonitor;
+import com.cache.ip.fdd.cache.support.RedisHitEnum;
 import org.springframework.data.redis.core.ZSetOperations;
 
 import java.util.*;
@@ -163,7 +166,11 @@ public class RedisService extends CacheBaseCommand implements CacheString, Cache
 
     @Override
     public Object get(Object key) {
-        return getRedisTemplate().opsForValue().get(getRedisCacheKey(key).getKey());
+        String getKey = getRedisCacheKey(key).getKey();
+        Object value = getRedisTemplate().opsForValue().get(getKey);
+        CacheMonitor cacheMonitor = new DefaultCacheMonitor();
+        cacheMonitor.monitor(getKey, value, RedisHitEnum.GET);
+        return value;
     }
 
     @Override

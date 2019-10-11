@@ -6,12 +6,14 @@ package com.cache.ip.fdd.cache.support;
  */
 public enum RedisHitEnum {
 
-    /***/
-    CACHEABLE(1);
+    /**cacheable注解*/
+    CACHEABLE("cacheable"),
+    /**gey操作*/
+    GET("get");
 
-    private Integer code;
+    private String operation;
 
-    RedisHitEnum(Integer code){
-        this.code = code;
+    RedisHitEnum(String operation){
+        this.operation = operation;
     }
 }

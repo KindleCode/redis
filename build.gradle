@@ -3,7 +3,7 @@ apply plugin: 'java'
 apply plugin: "project-report"
 
 group 'com.fangdd'
-version '1.0.5'
+version '1.0.7'
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
